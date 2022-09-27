@@ -1,0 +1,22 @@
+.content-wrapper {
+  width: 30%;
+  margin:50px auto;
+  border: 1px solid green;
+  padding: 10px 30px;
+}
+
+.info{
+  font-size: 13px;
+  font-style: italic;
+  color: grey;
+}
+.info2{
+  font-size: 13px;
+  color: rgb(24, 3, 3);
+}
+.link{
+  font-size: 13px;
+  font-style: italic;
+  color: rgb(128, 128, 128);
+  text-align: center;
+}

@@ -1,0 +1,20 @@
+<app-loader></app-loader>
+
+<div class="content-wrapper">
+
+<button (click)="loadData();">LoadData</button>
+<p class="info"> Click button to clear and load the data from backend.</p>
+<p class="info2">  Loader will be shown while http request is in progress</p>
+
+<div *ngIf="data.length>0">
+<h2>Heroes List</h2>
+<p *ngFor="let obj of data">
+  {{obj.id }} - {{obj.name}}
+</p>
+
+</div>
+
+</div>
+<div  class="link" >
+ <a href="https://medium.com/@abidhmuhsin/decorator-based-loader-for-angular-httpclient-f5b68853fb90"> Click to read Medium Article explaining the same</a>
+</div>
