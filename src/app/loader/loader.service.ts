@@ -1,27 +1,31 @@
 import { Injectable } from '@angular/core';
-import { finalize, map, catchError } from 'rxjs/operators'
+import { map, catchError } from 'rxjs/operators';
 
 @Injectable()
 export class LoaderService {
-
   private static loaderEnabled: boolean;
+  static jobs: number[] = [];
 
-  constructor() { }
+  constructor() {}
 
   get loaderEnabled() {
     return LoaderService.loaderEnabled;
   }
 
   public static showLoader() {
+    this.jobs.push(0);
+    console.log(this.jobs);
     LoaderService.loaderEnabled = true;
   }
 
   public static hideLoader() {
-    LoaderService.loaderEnabled = false;
+    this.jobs.pop();
+    console.log(`hide loader: ${this.jobs}`);
+    if (this.jobs.length === 0) {
+      LoaderService.loaderEnabled = false;
+    }
   }
-
 }
-
 
 /*  --Decorator LoaderEnabled--
 Use @LoaderEnabled() above any method that returns an observable.
@@ -30,35 +34,33 @@ the caller function and also adds a map and catch section to hide the
 loader once the subscription is complete.
 */
 export function LoaderEnabled(): MethodDecorator {
-
-  return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+  return function (
+    target: any,
+    propertyKey: string,
+    descriptor: PropertyDescriptor
+  ) {
     const original = descriptor.value;
 
     descriptor.value = function () {
-
       LoaderService.showLoader();
       console.log('**InjectedCode-begin--LOADERON', propertyKey);
 
-      return original.apply(this, arguments)
-        .pipe(
-          map((res) => {
-            console.log('**InjectedCode-map--LOADEROFF', propertyKey);
-            LoaderService.hideLoader();
-            return res;
-          }),
-          catchError((err) => {
-            console.log('**InjectedCode-err--LOADEROFF', propertyKey);
-            LoaderService.hideLoader();
-            throw err;
-          })
-        );
+      return original.apply(this, arguments).pipe(
+        map((res) => {
+          console.log('**InjectedCode-map--LOADEROFF', propertyKey);
+          LoaderService.hideLoader();
+          return res;
+        }),
+        catchError((err) => {
+          console.log('**InjectedCode-err--LOADEROFF', propertyKey);
+          LoaderService.hideLoader();
+          throw err;
+        })
+      );
     };
     return descriptor;
   };
-
 }
-
-
 
 /*
 export function LoaderEnabled(): MethodDecorator {

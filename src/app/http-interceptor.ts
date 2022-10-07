@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
-import { catchError, finalize, map } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 
 import { LoaderService } from './loader/loader.service';
 
@@ -8,26 +8,29 @@ import {
   HttpEvent,
   HttpHandler,
   HttpInterceptor,
-  HttpRequest
+  HttpRequest,
 } from '@angular/common/http';
 
 @Injectable()
 export class LoaderHttpInterceptor implements HttpInterceptor {
-  constructor() { }
+  constructor() {}
 
-  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    console.log('--LoaderHttpInterceptor')
+  intercept(
+    req: HttpRequest<any>,
+    next: HttpHandler
+  ): Observable<HttpEvent<any>> {
+    console.log('--LoaderHttpInterceptor');
     LoaderService.showLoader();
 
     return next.handle(req).pipe(
-      map(res => {
+      map((res) => {
         LoaderService.hideLoader();
         return res;
       }),
-      catchError(error => {
+      catchError((error) => {
         LoaderService.hideLoader();
         return throwError(error);
       })
-    )
+    );
   }
 }
